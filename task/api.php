@@ -7,13 +7,6 @@ $dblms = new dblms();
 $json = file_get_contents('php://input');
 $obj = json_decode($json, true);
 
-// $name 			= 		$obj['name'];
-// $sign 			= 		$obj['sign'];
-// $isActive		= 		$obj['isActive'];
-// $nation_id 		=		$obj['nation_id'];
-
-
-
 //------------------------------------------------------------------------------------------------
 if (isset($_GET['get_nation'])) {
 
@@ -39,7 +32,34 @@ if (isset($_GET['get_nation'])) {
 }
 
 //-*------------------------------------------------------------------------------------------------------------
-if (isset($_GET['user'])) {
+if (isset($_GET['get_affiliates'])) {
+
+	$sqllms  = $dblms->querylms("SELECT * FROM  " . AFFILIATES . "  
+													ORDER BY id ");
+	$dbdata = array();
+	//------------------------------------------------------------------------------------------------	
+	while ($rowstd = mysqli_fetch_assoc($sqllms)) {
+
+		$row['id']						= $rowstd['id'];
+		$row['name']					= $rowstd['name'];
+		$row['description']				= $rowstd['description'];
+		$row['img']						= $rowstd['img'];
+		$row['link']					= $rowstd['link'];
+		$row['isActive']				= $rowstd['isActive'];
+
+
+		array_push($dbdata, $row);
+	}
+	//--------------------------------------------------------------------------------------------------
+	$set = $dbdata;
+	header("Content-type: application/json; charset=utf-8");
+	echo $val = str_replace('\\/', '/', json_encode($set, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+	die();
+}
+
+//-*------------------------------------------------------------------------------------------------------------
+
+if (isset($_GET['get_user'])) {
 
 	$sqllms  = $dblms->querylms("SELECT *
 		FROM " . USERS . "  
@@ -77,12 +97,12 @@ if (isset($_GET['submit_matches'])) {
 	$datetime 		= 		$obj['datetime'];
 	$sport_id 		= 		$obj['sport_id'];
 	$champion_id 	= 		$obj['champion_id'];
-	$V1 			= 		$obj['1'];
+	$v1 			= 		$obj['v1'];
 	$x 				= 		$obj['x'];
-	$V2 			= 		$obj['2'];
-	$V1ht 			= 		$obj['1ht'];
+	$v2 			= 		$obj['v2'];
+	$v1ht 			= 		$obj['v1ht'];
 	$xht 			= 		$obj['xht'];
-	$V2ht 			= 		$obj['2ht'];
+	$v2ht 			= 		$obj['v2ht'];
 	$o05 			= 		$obj['o05'];
 	$u05 			= 		$obj['u05'];
 	$o15 			= 		$obj['o15'];
@@ -95,9 +115,9 @@ if (isset($_GET['submit_matches'])) {
 	$u15ht 			= 		$obj['u15ht'];
 	$gg 			= 		$obj['gg'];
 	$ng 			= 		$obj['ng'];
-	$V1x 			= 		$obj['1x'];
+	$v1x 			= 		$obj['v1x'];
 	$x2 			= 		$obj['x2'];
-	$V12 			= 		$obj['12'];
+	$v12 			= 		$obj['v12'];
 	$result 		= 		$obj['result'];
 
 	//------------------------------------------------
@@ -106,12 +126,12 @@ if (isset($_GET['submit_matches'])) {
 															datetime				, 
 															sport_id				, 
 															champion_id				, 
-															1						, 
+															v1						, 
 															x						, 
-															2						, 
-															1ht						,
+															v2						, 
+															v1ht					,
 															xht						, 
-															2ht						, 
+															v2ht					, 
 															o05						, 
 															u05						,
 															o15						, 
@@ -124,22 +144,22 @@ if (isset($_GET['submit_matches'])) {
 															u15ht					,
 															gg						, 
 															ng						, 
-															1x						, 
+															v1x						, 
 															x2						, 
-															12						, 
-															result
+															v12						, 
+															result					
 														  )
 													VALUES(
 															'" . $game . "'			, 
 															'" . $datetime . "'		,
 															'" . $sport_id . "'		, 
 															'" . $champion_id . "'	,
-															'" . $V1 . "'			, 
+															'" . $v1 . "'			, 
 															'" . $x . "'			,
-															'" . $V2 . "'			, 
-															'" . $V1ht . "'			,
+															'" . $v2 . "'			, 
+															'" . $v1ht . "'			,
 															'" . $xht . "'			, 
-															'" . $V2ht . "'			,
+															'" . $v2ht . "'			,
 															'" . $o05 . "'			, 
 															'" . $u05 . "'			,
 															'" . $o15 . "'			, 
@@ -152,9 +172,9 @@ if (isset($_GET['submit_matches'])) {
 															'" . $u15ht . "'		, 
 															'" . $gg . "'			,
 															'" . $ng . "'			, 
-															'" . $V1x . "'			,
+															'" . $v1x . "'			,
 															'" . $x2 . "'			, 
-															'" . $V12 . "'			,
+															'" . $v12 . "'			,
 															'" . $result . "'		)"
 	);
 	//--------------------------------------
@@ -176,17 +196,17 @@ if (isset($_GET['submit_matches'])) {
 
 	//--------------------------------------
 }
+
 //--------------------------------------------------------------------------------------------------------------
 
 if (isset($_GET['get_matches'])) {
 
-	$sqllms  = $dblms->querylms("SELECT mtc.id as Mtch_id, mtc.game, mtc.1, mtc.x, mtc.2, 
-											mtc.1ht, mtc.xht, mtc.2ht, mtc.o05, mtc.u05,
+	$sqllms  = $dblms->querylms("SELECT mtc.id as Mtch_id, mtc.game, mtc.v1, mtc.x, mtc.v2, 
+											mtc.v1ht, mtc.xht, mtc.v2ht, mtc.o05, mtc.u05,
 											mtc.datetime, mtc.o05ht, mtc.u05ht, mtc.o15, 
 											mtc.u15, mtc.o25, mtc.u25, mtc.gg, mtc.ng, 
-											mtc.1x, mtc.x2, mtc.12, mtc.o15ht, mtc.u15ht, 
-											mtc.result, mtc.updated_at, mtc.created_at, 
-											sprt.name as Sprt_name, chm.name  FROM " . MATCHES . " mtc
+											mtc.v1x, mtc.x2, mtc.v12, mtc.o15ht, mtc.u15ht, 
+											mtc.result, sprt.name as Sprt_name, chm.name  FROM " . MATCHES . " mtc
 												  INNER JOIN " . SPORTS . " sprt ON mtc.sport_id = sprt.id
 												  INNER JOIN " . CHAMPION . " chm ON mtc.champion_id = chm.id 
 									  			  ORDER BY mtc.id ASC");
@@ -199,12 +219,12 @@ if (isset($_GET['get_matches'])) {
 		$row['datetime']			= $rowstd['datetime'];
 		$row['sport_id'] 			= $rowstd['Sprt_name'];
 		$row['champion_id']			= $rowstd['name'];
-		$row['1']					= $rowstd['1'];
+		$row['v1']					= $rowstd['v1'];
 		$row['x']					= $rowstd['x'];
-		$row['2']					= $rowstd['2'];
-		$row['1ht'] 				= $rowstd['1ht'];
+		$row['v2']					= $rowstd['v2'];
+		$row['v1ht'] 				= $rowstd['v1ht'];
 		$row['xht'] 				= $rowstd['xht'];
-		$row['2ht']					= $rowstd['2ht'];
+		$row['v2ht']				= $rowstd['v2ht'];
 		$row['o05']					= $rowstd['o05'];
 		$row['u05']					= $rowstd['u05'];
 		$row['o15'] 				= $rowstd['o15'];
@@ -217,9 +237,9 @@ if (isset($_GET['get_matches'])) {
 		$row['u15ht'] 				= $rowstd['u15ht'];
 		$row['gg']					= $rowstd['gg'];
 		$row['ng']					= $rowstd['ng'];
-		$row['1x']					= $rowstd['1x'];
+		$row['v1x']					= $rowstd['v1x'];
 		$row['x2'] 					= $rowstd['x2'];
-		$row['12'] 					= $rowstd['12'];
+		$row['v12'] 				= $rowstd['v12'];
 		$row['result']				= $rowstd['result'];
 		// $row['created_at']			= $rowstd['created_at'];
 		// $row['created_at']			= $rowstd['updated_at'];
@@ -251,20 +271,20 @@ if (isset($_GET['pre_id']) && ($_GET['pre_id'] != '')) {
 
 	//------------------------------------------------
 	$sqllms  = $dblms->querylms("UPDATE " . PREDICTIONS . " SET match_id	= '" . ($match_id) . "'
- 													, user_id			= '" . ($user_id) . "'
-													, 1x2				= '" . ($V1x2) . "'
-													, 1x2ht				= '" . ($V1x2ht) . "'
-													, ou05				= '" . ($ou05) . "'
-													, ou15				= '" . ($ou15) . "'
-													, ou25				= '" . ($ou25) . "'
-													, ou05ht			= '" . ($ou05ht) . "'
-													, ou15ht			= '" . ($ou15ht) . "'
-													, ggng				= '" . ($ggng) . "'
-													, double_change		= '" . ($double_change) . "'
-													, status_id			= '" . ($status_id) . "'
+														, user_id			= '" . ($user_id) . "'
+														, 1x2				= '" . ($V1x2) . "'
+														, 1x2ht				= '" . ($V1x2ht) . "'
+														, ou05				= '" . ($ou05) . "'
+														, ou15				= '" . ($ou15) . "'
+														, ou25				= '" . ($ou25) . "'
+														, ou05ht			= '" . ($ou05ht) . "'
+														, ou15ht			= '" . ($ou15ht) . "'
+														, ggng				= '" . ($ggng) . "'
+														, double_change		= '" . ($double_change) . "'
+														, status_id			= '" . ($status_id) . "'
 
 													
-													WHERE id = '" . $_GET['pre_id'] . "'");
+															WHERE id = '" . $_GET['pre_id'] . "'");
 	//--------------------------------------
 	if ($sqllms) {
 		// If the record inserted successfully then show the message as response. 
@@ -324,7 +344,7 @@ if (isset($_GET['get_predictions'])) {
 	die();
 }
 //--------------------------------------------------------------------------------------------------------------
-if (isset($_GET['bets'])) {
+if (isset($_GET['get_bets'])) {
 
 	$sqllms  = $dblms->querylms("SELECT bet.id as Bet_id, bet.name, bet.stake, usr.username,
 											bet.quote, bet.odds_win, bet.isLike,  sts.name as Status_name 
