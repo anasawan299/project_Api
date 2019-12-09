@@ -6,6 +6,7 @@ $dblms = new dblms();
 //---------------------------------------------
 $json = file_get_contents('php://input');
 $obj = json_decode($json, true);
+header('Access-Control-Allow-Origin: *');
 
 //------------------------------------------------------------------------------------------------
 if (isset($_GET['get_nation'])) {
